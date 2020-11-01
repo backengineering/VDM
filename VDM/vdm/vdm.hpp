@@ -31,7 +31,8 @@ namespace vdm
 				sizeof(vdm::raw_driver)
 			);
 
-		if (!result) return { {}, {} };
+		if (!result) 
+			return { {}, {} };
 
 		vdm::drv_handle = CreateFile(
 			"\\\\.\\GIO",
