@@ -28,9 +28,7 @@ __forceinline auto load_drv() -> std::pair <HANDLE, std::string>
 		sizeof(vdm::raw_driver)
 	    );
 
-	if (!result) 
-		return { {}, {} };
-
+	if (!result) return { {}, {} };
 	vdm::drv_handle = CreateFile(
 		"\\\\.\\GIO",
 		GENERIC_READ | GENERIC_WRITE,
