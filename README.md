@@ -42,3 +42,39 @@ __forceinline auto load_drv() -> std::pair <HANDLE, std::string>
 	return { vdm::drv_handle, key };
 }
 ```
+
+### vdm::unload_drv
+
+This code probably wont change, its just a wrapper function for `driver::unload`, but it also closes the driver handle before trying to unload the driver...
+
+```cpp
+__forceinline bool unload_drv(HANDLE drv_handle, std::string drv_key)
+{
+    return CloseHandle(drv_handle) && driver::unload(drv_key);
+}
+```
+
+### vdm::read_phys
+
+Most drivers expose mapping of physical memory. This means you will need to map the physical memory, memcpy it, then unmap it. This allows support
+for drivers that actually only offer physical read and write and not physical map/unmap.
+
+```cpp
+__forceinline bool read_phys(void* addr, void* buffer, std::size_t size)
+{
+    // code to read physical memory. most drivers offer map/unmap physical
+    // so you will need to map the physical memory, memcpy, then unmap the memory
+}
+```
+
+### vdm::write_phys
+
+This function is going to probably contain the same code as `vdm::read_phys` except the memcpy dest and src swapped...
+
+```cpp
+__forceinline bool write_phys(void* addr, void* buffer, std::size_t size)
+{
+    // code to write physical memory... same code as vdm::read_phys
+    // except memcpy dest and src are swapped.
+}
+```
