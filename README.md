@@ -23,10 +23,10 @@ for the driver. The key name is returned from [loadup](https://githacks.org/xero
 __forceinline auto load_drv() -> std::pair <HANDLE, std::string>
 {
 	const auto [result, key] =
-		driver::load(
-		vdm::raw_driver,
-		sizeof(vdm::raw_driver)
-	);
+	    driver::load(
+		    vdm::raw_driver,
+		    sizeof(vdm::raw_driver)
+	    );
 
 	if (!result) 
 		return { {}, {} };
