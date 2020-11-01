@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\util">
+      <UniqueIdentifier>{4fd2f117-66bb-4f75-af5b-b7e041a4dc48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\vdm">
+      <UniqueIdentifier>{c4aa2f98-70d4-418e-894d-4e1975e2bad2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdm_ctx\vdm_ctx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="util\util.hpp">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\nt.hpp">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="vdm\vdm.hpp">
+      <Filter>Header Files\vdm</Filter>
+    </ClInclude>
+    <ClInclude Include="util\loadup.hpp">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="vdm_ctx\vdm_ctx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vdm\raw_driver.hpp">
+      <Filter>Header Files\vdm</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
