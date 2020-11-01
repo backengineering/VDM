@@ -19,7 +19,7 @@ In this example VDM syscalls into an inline hook placed on NtShutdownSystem to c
 vdm::vdm_ctx vdm;
 const auto ntoskrnl_base =
 reinterpret_cast<void*>(
-	util::get_module_base("ntoskrnl.exe"));
+    util::get_module_base("ntoskrnl.exe"));
 
 const auto ntoskrnl_memcpy =
     util::get_kernel_export("ntoskrnl.exe", "memcpy");
