@@ -22,7 +22,7 @@ reinterpret_cast<void*>(
 	util::get_module_base("ntoskrnl.exe"));
 
 const auto ntoskrnl_memcpy =
-util::get_kernel_export("ntoskrnl.exe", "memcpy");
+    util::get_kernel_export("ntoskrnl.exe", "memcpy");
 
 std::printf("[+] drv_handle -> 0x%x, drv_key -> %s\n", drv_handle, drv_key.c_str());
 std::printf("[+] %s physical address -> 0x%p\n", vdm::syscall_hook.first, vdm::syscall_address.load());
