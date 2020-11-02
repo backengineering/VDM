@@ -42,8 +42,8 @@ std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 
 #### Demo Code Result
 ```
-[+] drv_handle -> 0x70, drv_key -> frAQBc8Wsa1xVPfv
-[+] NtShutdownSystem physical address -> 0x00000000109BB3A0
+[+] drv_handle -> 0xb0, drv_key -> frAQBc8Wsa1xVPfv
+[+] NtGdiDdDDICreateContext physical address -> 0x0000000100ACA5F0
 [+] ntoskrnl base address -> 0xFFFFF80075200000
 [+] ntoskrnl memcpy address -> 0xFFFFF800755F0980
 [+] kernel MZ -> 0x5a4d
