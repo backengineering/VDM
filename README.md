@@ -51,7 +51,7 @@ std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 # Usage
 
 Currently the project is configured to use gdrv, but if you want to swap the driver out you must defined four functions. You can also change which syscall you want to 
-hook by changing this variable inside of `vdm.h`.
+hook by changing this variable inside of `vdm_ctx/vdm_ctx.h`.
 
 ```cpp
 // change this to whatever you want :^)
