@@ -1,13 +1,17 @@
 <div align="center">
     <div>
-        <img src="https://imgur.com/7ipSZRN.png"/>
+        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/7ipSZRN.png"/>
+        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Patch%20Guard-Compliant%20-green.svg"/>
+        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%2010-supported-green.svg"/>
+        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%207-supported-green.svg"/>
     </div>
 </div>
 
 # Vulnerable Driver Manipulation
 
 A library to manipulate drivers exposing a physical memory read/write primitive to allow the user to call any function in the kernel. There are thousands of drivers exposing physical
-memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys.
+memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys. This is basiclly what physmeme was about but that project is not truly "physical read and write" 
+whereas this project is. This project can be used more broadly then physmeme.
 
 # Example
 
