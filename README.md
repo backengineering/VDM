@@ -7,13 +7,11 @@
 # Vulnerable Driver Manipulation
 
 A library to manipulate drivers exposing a physical memory read/write primitive to allow the user to call any function in the kernel. There are thousands of drivers exposing physical
-memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys, and is inline hooking NtShutdownSystem. The inline hook is not patchguard friendly,
-but is removed after every syscall into NtShutdownSystem to prevent triggering patchguard. Although this is not patchguard friendly, using this to call a few hundred kernel functions will most likely not cause any issues. 
-This library is not ment to be used by itself, it is ment to help the programmer setup whatever they need to in the kernel (like mapping a driver or setting up paging tables).
+memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys, and is inline hooking `dxgkrnl.NtGdiDdDDICreateContext`.
 
 # Example
 
-In this example VDM syscalls into an inline hook placed on NtShutdownSystem to call memcpy exported from ntoskrnl.exe.
+In this example VDM syscalls into an inline hook placed on `dxgkrnl.NtGdiDdDDICreateContext` to call memcpy exported from ntoskrnl.exe.
 
 #### Demo Code
 ```cpp
@@ -42,8 +40,8 @@ std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 
 #### Demo Code Result
 ```
-[+] drv_handle -> 0x70, drv_key -> frAQBc8Wsa1xVPfv
-[+] NtShutdownSystem physical address -> 0x00000000109BB3A0
+[+] drv_handle -> 0xb0, drv_key -> frAQBc8Wsa1xVPfv
+[+] NtGdiDdDDICreateContext physical address -> 0x0000000100ACA5F0
 [+] ntoskrnl base address -> 0xFFFFF80075200000
 [+] ntoskrnl memcpy address -> 0xFFFFF800755F0980
 [+] kernel MZ -> 0x5a4d
@@ -52,7 +50,13 @@ std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 
 # Usage
 
-Currently the project is configured to use gdrv, but if you want to swap the driver out you must defined four functions. 
+Currently the project is configured to use gdrv, but if you want to swap the driver out you must defined four functions. You can also change which syscall you want to 
+hook by changing this variable inside of `vdm_ctx/vdm_ctx.h`.
+
+```cpp
+// change this to whatever you want :^)
+constexpr std::pair<const char*, const char*> syscall_hook = { "NtGdiDdDDICreateContext", "win32u.dll" };
+```
 
 ### vdm::load_drv
 
