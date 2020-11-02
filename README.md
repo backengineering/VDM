@@ -7,13 +7,11 @@
 # Vulnerable Driver Manipulation
 
 A library to manipulate drivers exposing a physical memory read/write primitive to allow the user to call any function in the kernel. There are thousands of drivers exposing physical
-memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys, and is inline hooking NtShutdownSystem. The inline hook is not patchguard friendly,
-but is removed after every syscall into NtShutdownSystem to prevent triggering patchguard. Although this is not patchguard friendly, using this to call a few hundred kernel functions will most likely not cause any issues. 
-This library is not ment to be used by itself, it is ment to help the programmer setup whatever they need to in the kernel (like mapping a driver or setting up paging tables).
+memory read/write, a bunch are listed in this repo. Currently the project is using gdrv.sys, and is inline hooking `dxgkrnl.NtGdiDdDDICreateContext`.
 
 # Example
 
-In this example VDM syscalls into an inline hook placed on NtShutdownSystem to call memcpy exported from ntoskrnl.exe.
+In this example VDM syscalls into an inline hook placed on `dxgkrnl.NtGdiDdDDICreateContext` to call memcpy exported from ntoskrnl.exe.
 
 #### Demo Code
 ```cpp
