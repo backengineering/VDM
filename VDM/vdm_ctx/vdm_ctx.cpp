@@ -50,7 +50,7 @@ namespace vdm
 				continue;
 
 			// check the first 32 bytes of the syscall, if its the same, test that its the correct
-			// occurrence of these bytes (since ntoskrnl is loaded into physical memory at least 2 times now)...
+			// occurrence of these bytes (since dxgkrnl is loaded into physical memory at least 2 times now)...
 			if (!memcmp(page_data + nt_page_offset, dxgkrnl_buffer + nt_rva, 32))
 				if (valid_syscall(reinterpret_cast<void*>(address + page + nt_page_offset)))
 					syscall_address.store(
