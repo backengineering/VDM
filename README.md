@@ -1,10 +1,10 @@
 <div align="center">
     <div>
         <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/7ipSZRN.png"/>
-        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Patch%20Guard-Compliant%20-green.svg"/>
-        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%2010-supported-green.svg"/>
-        <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%207-supported-green.svg"/>
     </div>
+    <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Patch%20Guard-Compliant%20-green.svg"/>
+    <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%2010-supported-green.svg"/>
+    <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%207-supported-green.svg"/>
 </div>
 
 # Vulnerable Driver Manipulation
