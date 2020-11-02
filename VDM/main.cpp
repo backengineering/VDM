@@ -29,8 +29,8 @@ int __cdecl main(int argc, char** argv)
 		ntoskrnl_base,
 		sizeof mz_bytes
 	);
-	std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 
+	std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 	if (!vdm::unload_drv(drv_handle, drv_key))
 	{
 		std::printf("[!] unable to unload vulnerable driver...\n");

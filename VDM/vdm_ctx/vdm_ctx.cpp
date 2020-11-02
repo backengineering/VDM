@@ -4,18 +4,19 @@ namespace vdm
 {
 	vdm_ctx::vdm_ctx()
 	{
+		LoadLibraryA("user32.dll"); // required for win32u.dll...
+		vdm::dxgkrnl_buffer = reinterpret_cast<std::uint8_t*>(
+			LoadLibraryEx("drivers\\dxgkrnl.sys", NULL,
+				DONT_RESOLVE_DLL_REFERENCES));
+
 		nt_rva = reinterpret_cast<std::uint32_t>(
 			util::get_kernel_export(
-				"ntoskrnl.exe",
+				"dxgkrnl.sys",
 				syscall_hook.first,
 				true
 			));
 
-		nt_page_offset = nt_rva % PAGE_4KB;
-		ntoskrnl_buffer = reinterpret_cast<std::uint8_t*>(
-			LoadLibraryEx("ntoskrnl.exe", NULL, 
-				DONT_RESOLVE_DLL_REFERENCES));
-
+		vdm::nt_page_offset = nt_rva % PAGE_4KB;
 		// for each physical memory range, make a thread to search it
 		std::vector<std::thread> search_threads;
 		for (auto ranges : util::pmem_ranges)
@@ -50,7 +51,7 @@ namespace vdm
 
 			// check the first 32 bytes of the syscall, if its the same, test that its the correct
 			// occurrence of these bytes (since ntoskrnl is loaded into physical memory at least 2 times now)...
-			if (!memcmp(page_data + nt_page_offset, ntoskrnl_buffer + nt_rva, 32))
+			if (!memcmp(page_data + nt_page_offset, dxgkrnl_buffer + nt_rva, 32))
 				if (valid_syscall(reinterpret_cast<void*>(address + page + nt_page_offset)))
 					syscall_address.store(
 						reinterpret_cast<void*>(
@@ -67,7 +68,7 @@ namespace vdm
 
 		static const auto proc =
 			GetProcAddress(
-				GetModuleHandleA(syscall_hook.second),
+				LoadLibraryA(syscall_hook.second),
 				syscall_hook.first
 			);
 

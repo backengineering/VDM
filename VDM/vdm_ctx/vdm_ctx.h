@@ -10,13 +10,15 @@
 
 namespace vdm
 {
-	constexpr std::pair<const char*, const char*> syscall_hook = { "NtShutdownSystem", "ntdll.dll" };
+	// change this to whatever you want :^)
+	constexpr std::pair<const char*, const char*> syscall_hook = { "NtGdiDdDDICreateContext", "win32u.dll" };
+
 	inline std::atomic<bool> is_page_found = false;
 	inline std::atomic<void*> syscall_address = nullptr;
 
 	inline std::uint16_t nt_page_offset;
 	inline std::uint32_t nt_rva;
-	inline std::uint8_t* ntoskrnl_buffer;
+	inline std::uint8_t* dxgkrnl_buffer;
 
 	class vdm_ctx
 	{
@@ -27,7 +29,7 @@ namespace vdm
 		{
 			static const auto proc = 
 				GetProcAddress(
-					GetModuleHandleA(syscall_hook.second),
+					LoadLibraryA(syscall_hook.second),
 					syscall_hook.first
 				);
 
