@@ -4,6 +4,10 @@ namespace vdm
 {
 	vdm_ctx::vdm_ctx()
 	{
+		// if we already found the syscall's physical page...
+		if (vdm::syscall_address.load())
+			return;
+
 		vdm::ntoskrnl = reinterpret_cast<std::uint8_t*>(
 			LoadLibraryExA("ntoskrnl.exe", NULL,
 				DONT_RESOLVE_DLL_REFERENCES));
