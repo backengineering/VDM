@@ -2,7 +2,6 @@
     <div>
         <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/7ipSZRN.png"/>
     </div>
-    <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Patch%20Guard-Compliant%20-green.svg"/>
     <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%2010-supported-green.svg"/>
     <img src="https://githacks.org/xerox/vdm/-/raw/467698a1d756a21f5bc4da942a36f980fc895cc6/img/Windows%207-supported-green.svg"/>
 </div>
@@ -15,7 +14,8 @@ whereas this project is. This project can be used more broadly then physmeme.
 
 # Example
 
-In this example VDM syscalls into an inline hook placed on `ntoskrnl.NtShutdownSystem` to call memcpy exported from ntoskrnl.exe.
+In this example VDM syscalls into an inline hook placed on `ntoskrnl.NtShutdownSystem` to call memcpy exported from ntoskrnl.exe. The original bytes are restored
+directly after the syscall returns.
 
 #### Demo Code
 ```cpp
