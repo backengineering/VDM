@@ -15,7 +15,7 @@ whereas this project is. This project can be used more broadly then physmeme.
 
 # Example
 
-In this example VDM syscalls into an inline hook placed on `dxgkrnl.NtGdiDdDDICreateContext` to call memcpy exported from ntoskrnl.exe.
+In this example VDM syscalls into an inline hook placed on `ntoskrnl.NtShutdownSystem` to call memcpy exported from ntoskrnl.exe.
 
 #### Demo Code
 ```cpp
@@ -44,10 +44,11 @@ std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
 
 #### Demo Code Result
 ```
-[+] drv_handle -> 0xb0, drv_key -> frAQBc8Wsa1xVPfv
-[+] NtGdiDdDDICreateContext physical address -> 0x0000000100ACA5F0
-[+] ntoskrnl base address -> 0xFFFFF80075200000
-[+] ntoskrnl memcpy address -> 0xFFFFF800755F0980
+[+] drv_handle -> 0x100, drv_key -> frAQBc8Wsa1xVPfv
+[+] NtShutdownSystem physical address -> 0x0000000002D0B1A0
+[+] NtShutdownSystem page offset -> 0x1a0
+[+] ntoskrnl base address -> 0xFFFFF80456400000
+[+] ntoskrnl memcpy address -> 0xFFFFF804565D5A80
 [+] kernel MZ -> 0x5a4d
 [+] press any key to close...
 ```
@@ -59,7 +60,7 @@ hook by changing this variable inside of `vdm_ctx/vdm_ctx.h`.
 
 ```cpp
 // change this to whatever you want :^)
-constexpr std::pair<const char*, const char*> syscall_hook = { "NtGdiDdDDICreateContext", "win32u.dll" };
+constexpr std::pair<const char*, const char*> syscall_hook = { "NtShutdownSystem`", "ntdll.dll" };
 ```
 
 ### vdm::load_drv

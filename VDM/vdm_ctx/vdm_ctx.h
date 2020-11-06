@@ -11,14 +11,14 @@
 namespace vdm
 {
 	// change this to whatever you want :^)
-	constexpr std::pair<const char*, const char*> syscall_hook = { "NtGdiDdDDICreateContext", "win32u.dll" };
+	constexpr std::pair<const char*, const char*> syscall_hook = { "NtShutdownSystem", "ntdll.dll" };
 
 	inline std::atomic<bool> is_page_found = false;
 	inline std::atomic<void*> syscall_address = nullptr;
 
 	inline std::uint16_t nt_page_offset;
 	inline std::uint32_t nt_rva;
-	inline std::uint8_t* dxgkrnl_buffer;
+	inline std::uint8_t* ntoskrnl;
 
 	class vdm_ctx
 	{
