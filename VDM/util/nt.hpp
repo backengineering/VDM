@@ -27,3 +27,9 @@ typedef struct _RTL_PROCESS_MODULES
 } RTL_PROCESS_MODULES, * PRTL_PROCESS_MODULES;
 
 typedef LARGE_INTEGER PHYSICAL_ADDRESS, * PPHYSICAL_ADDRESS;
+
+using PEPROCESS = PVOID;
+using PsLookupProcessByProcessId = NTSTATUS(__fastcall*)(
+	HANDLE     ProcessId,
+	PEPROCESS* Process
+);

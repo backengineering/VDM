@@ -59,7 +59,7 @@ namespace util
 		return &nt_headers->FileHeader;
 	}
 
-	__forceinline auto get_module_base(const char* module_name) -> std::uintptr_t
+	__forceinline auto get_kmodule_base(const char* module_name) -> std::uintptr_t
 	{
 		void* buffer = nullptr;
 		DWORD buffer_size = NULL;
@@ -99,7 +99,7 @@ namespace util
 		return NULL;
 	}
 
-	__forceinline auto get_kernel_export(const char* module_name, const char* export_name, bool rva = false) -> void*
+	__forceinline auto get_kmodule_export(const char* module_name, const char* export_name, bool rva = false) -> void*
 	{
 		void* buffer = nullptr;
 		DWORD buffer_size = NULL;
