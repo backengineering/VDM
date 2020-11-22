@@ -47,6 +47,24 @@ namespace vdm
 		this->write_phys = write_func;
 	}
 
+	void vdm_ctx::rkm(void* dst, void* src, std::size_t size)
+	{
+		static const auto ntoskrnl_memcpy =
+			util::get_kmodule_export("ntoskrnl.exe", "memcpy");
+
+		this->syscall<decltype(&memcpy)>(
+			ntoskrnl_memcpy, dst, src, size);
+	}
+
+	void vdm_ctx::wkm(void* dst, void* src, std::size_t size)
+	{
+		static const auto ntoskrnl_memcpy =
+			util::get_kmodule_export("ntoskrnl.exe", "memcpy");
+
+		this->syscall<decltype(&memcpy)>(
+			ntoskrnl_memcpy, dst, src, size);
+	}
+
 	void vdm_ctx::locate_syscall(std::uintptr_t address, std::uintptr_t length) const
 	{
 		const auto page_data =
