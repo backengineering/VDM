@@ -21,27 +21,56 @@ namespace util
 		return false;
 	}
 
-	// Author: Remy Lebeau
-	// taken from here: https://stackoverflow.com/questions/48485364/read-reg-resource-list-memory-values-incorrect-value
-	static const auto init_ranges = ([&]() -> bool
+#pragma pack (push, 1)
+	struct PhysicalMemoryPage//CM_PARTIAL_RESOURCE_DESCRIPTOR
+	{
+		uint8_t type;
+		uint8_t shareDisposition;
+		uint16_t flags;
+		uint64_t pBegin;
+		uint32_t sizeButNotExactly;
+		uint32_t pad;
+
+		static constexpr uint16_t cm_resource_memory_large_40{ 0x200 };
+		static constexpr uint16_t cm_resource_memory_large_48{ 0x400 };
+		static constexpr uint16_t cm_resource_memory_large_64{ 0x800 };
+
+		uint64_t size()const noexcept
+		{
+			if (flags & cm_resource_memory_large_40)
+				return uint64_t{ sizeButNotExactly } << 8;
+			else if (flags & cm_resource_memory_large_48)
+				return uint64_t{ sizeButNotExactly } << 16;
+			else if (flags & cm_resource_memory_large_64)
+				return uint64_t{ sizeButNotExactly } << 32;
+			else
+				return uint64_t{ sizeButNotExactly };
+		}
+	};
+	static_assert(sizeof(PhysicalMemoryPage) == 20);
+#pragma pack (pop)
+
+	inline const auto init_ranges = ([&]() -> bool
 	{
 			HKEY h_key;
 			DWORD type, size;
 			LPBYTE data;
-
 			RegOpenKeyEx(HKEY_LOCAL_MACHINE, "HARDWARE\\RESOURCEMAP\\System Resources\\Physical Memory", 0, KEY_READ, &h_key);
 			RegQueryValueEx(h_key, ".Translated", NULL, &type, NULL, &size); //get size
 			data = new BYTE[size];
 			RegQueryValueEx(h_key, ".Translated", NULL, &type, data, &size);
 			DWORD count = *(DWORD*)(data + 16);
 			auto pmi = data + 24;
-
 			for (int dwIndex = 0; dwIndex < count; dwIndex++)
 			{
+#if 0
 				pmem_ranges.emplace(*(uint64_t*)(pmi + 0), *(uint64_t*)(pmi + 8));
+#else
+				const PhysicalMemoryPage& page{ *(PhysicalMemoryPage*)(pmi - 4) };
+				pmem_ranges.emplace(page.pBegin, page.size());
+#endif
 				pmi += 20;
 			}
-
 			delete[] data;
 			RegCloseKey(h_key);
 			return true;

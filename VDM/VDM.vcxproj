@@ -169,6 +169,9 @@
     <ClInclude Include="vdm\vdm.hpp" />
     <ClInclude Include="vdm_ctx\vdm_ctx.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
