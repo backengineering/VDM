@@ -23,7 +23,7 @@ typedef struct _gdrv_t
 namespace vdm
 {
 	inline HANDLE drv_handle;
-	__forceinline auto load_drv() -> std::pair <HANDLE, std::string>
+	__forceinline auto load_drv() -> std::tuple<HANDLE, std::string, NTSTATUS>
 	{
 		const auto [result, key] =
 			driver::load(
@@ -31,8 +31,8 @@ namespace vdm
 				sizeof(vdm::raw_driver)
 			);
 
-		if (!result) 
-			return { {}, {} };
+		if (result != STATUS_SUCCESS) 
+			return { {}, {}, result };
 
 		vdm::drv_handle = CreateFile(
 			"\\\\.\\GIO",
@@ -44,12 +44,15 @@ namespace vdm
 			NULL
 		);
 
-		return { vdm::drv_handle, key };
+		return { vdm::drv_handle, key, result };
 	}
 
-	__forceinline bool unload_drv(HANDLE drv_handle, std::string drv_key)
+	__forceinline auto unload_drv(HANDLE drv_handle, std::string drv_key) -> NTSTATUS
 	{
-		return CloseHandle(drv_handle) && driver::unload(drv_key);
+		if (!CloseHandle(drv_handle))
+			return STATUS_FAIL_CHECK;
+
+		return driver::unload(drv_key);
 	}
 
 	__forceinline bool read_phys(void* addr, void* buffer, std::size_t size)

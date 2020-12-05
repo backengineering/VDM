@@ -29,6 +29,7 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <ntstatus.h>
 
 #pragma comment(lib, "ntdll.lib")
 extern "C" NTSTATUS NtLoadDriver(PUNICODE_STRING);
@@ -172,7 +173,7 @@ namespace driver
 		}
 	}
 
-	__forceinline auto load(const std::string& drv_path, const std::string& service_name) -> bool
+	__forceinline auto load(const std::string& drv_path, const std::string& service_name) -> NTSTATUS
 	{
 		if (!util::enable_privilege(L"SeLoadDriverPrivilege"))
 			return false;
@@ -189,10 +190,10 @@ namespace driver
 
 		RtlInitAnsiString(&driver_rep_path_cstr, reg_path.c_str());
 		RtlAnsiStringToUnicodeString(&driver_reg_path_unicode, &driver_rep_path_cstr, true);
-		return ERROR_SUCCESS == NtLoadDriver(&driver_reg_path_unicode);
+		return NtLoadDriver(&driver_reg_path_unicode);
 	}
 
-	__forceinline auto load(const std::vector<std::uint8_t>& drv_buffer) -> std::tuple<bool, std::string>
+	__forceinline auto load(const std::vector<std::uint8_t>& drv_buffer) -> std::pair<NTSTATUS, std::string>
 	{
 		static const auto random_file_name = [](std::size_t length) -> std::string
 		{
@@ -220,13 +221,13 @@ namespace driver
 		return { load(file_path, service_name), service_name };
 	}
 
-	__forceinline auto load(const std::uint8_t* buffer, const std::size_t size) -> std::tuple<bool, std::string>
+	__forceinline auto load(const std::uint8_t* buffer, const std::size_t size) -> std::pair<NTSTATUS, std::string>
 	{
 		std::vector<std::uint8_t> image(buffer, buffer + size);
 		return load(image);
 	}
 
-	__forceinline auto unload(const std::string& service_name) -> bool
+	__forceinline auto unload(const std::string& service_name) -> NTSTATUS
 	{
 		std::string reg_path("\\Registry\\Machine\\System\\CurrentControlSet\\Services\\");
 		reg_path += service_name;
@@ -235,22 +236,25 @@ namespace driver
 		UNICODE_STRING driver_reg_path_unicode;
 
 		RtlInitAnsiString(&driver_rep_path_cstr, reg_path.c_str());
-		RtlAnsiStringToUnicodeString(&driver_reg_path_unicode, &driver_rep_path_cstr, true);
+		RtlAnsiStringToUnicodeString(
+			&driver_reg_path_unicode, &driver_rep_path_cstr, true);
 
-		const bool unload_drv = STATUS_SUCCESS == NtUnloadDriver(&driver_reg_path_unicode);
-		const auto image_path = std::filesystem::temp_directory_path().string() + service_name;
-		const bool delete_reg = util::delete_service_entry(service_name);
+		const bool unload_result = 
+			NtUnloadDriver(&driver_reg_path_unicode);
 
+		util::delete_service_entry(service_name);
 		// sometimes you cannot delete the driver off disk because there are still handles open
 		// to the driver, this means the driver is still loaded into the kernel...
 		try
 		{
-			std::filesystem::remove(image_path);
+			std::filesystem::remove(
+				std::filesystem::temp_directory_path()
+					.string() + service_name);
 		}
 		catch (std::exception& e)
 		{
-			return false;
+			return STATUS_ABANDONED;
 		}
-		return delete_reg && unload_drv;
+		return unload_result;
 	}
 }

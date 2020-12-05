@@ -2,10 +2,10 @@
 
 int __cdecl main(int argc, char** argv)
 {
-	const auto [drv_handle, drv_key] = vdm::load_drv();
-	if (!drv_handle || drv_key.empty())
+	const auto [drv_handle, drv_key, load_status] = vdm::load_drv();
+	if (drv_handle == INVALID_HANDLE_VALUE || load_status != STATUS_SUCCESS)
 	{
-		std::printf("[!] unable to load vulnerable driver...\n");
+		std::printf("[!] unable to load vulnerable driver... reason -> 0x%x\n", load_status);
 		return -1;
 	}
 
@@ -46,9 +46,11 @@ int __cdecl main(int argc, char** argv)
 	);
 
 	std::printf("[+] kernel MZ -> 0x%x\n", mz_bytes);
-	if (!vdm::unload_drv(drv_handle, drv_key))
+	auto unload_result = vdm::unload_drv(drv_handle, drv_key);
+
+	if (unload_result != STATUS_SUCCESS)
 	{
-		std::printf("[!] unable to unload vulnerable driver...\n");
+		std::printf("[!] unable to unload vulnerable driver... reason -> 0x%x\n", unload_result);
 		return -1;
 	}
 
