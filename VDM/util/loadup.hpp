@@ -197,6 +197,7 @@ namespace driver
 	{
 		static const auto random_file_name = [](std::size_t length) -> std::string
 		{
+			std::srand(std::time(0));
 			static const auto randchar = []() -> char
 			{
 				const char charset[] =
@@ -206,6 +207,7 @@ namespace driver
 				const std::size_t max_index = (sizeof(charset) - 1);
 				return charset[rand() % max_index];
 			};
+
 			std::string str(length, 0);
 			std::generate_n(str.begin(), length, randchar);
 			return str;
